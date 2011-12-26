@@ -1,0 +1,52 @@
+#!/usr/bin/python
+import shutil
+import subprocess
+import os
+
+# Directories must end with a trailing slash!
+temp = "~/cs123_tmp/"
+obj_root = "/course/cs123/lib/"
+
+print "CS123 Test Suite"
+if not os.path.exists("./CS123.pro"):
+    print "Please run this script in the directory containing CS123.pro."
+    exit(1)
+
+print "Copying files to " + temp + "..."
+os.system("rsync --exclude=.git --exclude=CS123.pro.user --chmod=u=rwX -a . " + temp);
+os.chdir(os.path.expanduser(temp))
+
+print "Patching CS123.pro..."
+f = open(os.path.expanduser(temp+"CS123.pro"),'a')
+f.write("\nOBJECTS += " + obj_root + "TA_Tester.o")
+f.write("\nOBJECTS += " + obj_root + "TA_Camera.o")
+f.close()
+
+print "Patching main.cpp..."
+f = open(os.path.expanduser(temp+"main.cpp"), 'w')
+f.write("#include \"" + obj_root + "TA_Tester.h\"\n");
+f.write("""
+#include "camera/CamtransCamera.h"
+#include <iostream>
+
+int main() {
+	TA_Tester t;
+	t.camtrans = new CamtransCamera();
+	t.test_all().toOstream(std::cout);
+}
+""");
+f.close();
+if (os.path.exists(os.path.expanduser(temp+"main.o"))):
+    os.unlink(os.path.expanduser(temp+"main.o"));
+
+os.system("qmake CS123.pro");
+os.system("rm -f *.pro.user");
+if (os.path.exists(temp+"Makefile.Debug")):
+    os.system("make -f Makefile.Debug -j5")
+else:
+    os.system("make -j5")
+os.system(temp+"CS123");
+
+print "All done! Deleting temporary files..."
+shutil.rmtree(os.path.expanduser(temp));
+exit(0)
