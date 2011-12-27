@@ -21,6 +21,11 @@
 
 typedef double REAL;
 
+static inline float urand(float lower = 0.0f, float upper = 1.0f)
+{
+    return (rand() % 1000) / 1000.0f * (upper - lower) + lower;
+}
+
 //! A structure for a color.  Each channel is 8 bits [0-255].
 struct BGRA
 {

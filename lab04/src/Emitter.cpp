@@ -1,4 +1,5 @@
 #include "Emitter.h"
+#include "CS123Common.h"
 
 Emitter::Emitter(double x_loc)
 {
@@ -17,7 +18,7 @@ void Emitter::addDrop()
     Droplet d;
     d.init_pos = Vector3(m_x_loc, FTN_TOP, 0.0);
     d.curr_pos = Vector3(m_x_loc, FTN_TOP, 0.0);
-    d.velocity = Vector3(0.0, -0.005, 0.0);
+    d.velocity = Vector3(0.0, -0.03, 0.0);
     m_active_drops->push_back(d);
 
 }
@@ -40,7 +41,9 @@ void Emitter::updateDrops()
 {
     for (int i = 0; i < m_active_drops->size(); i++)
     {
-        m_active_drops->at(i).curr_pos.y += m_active_drops->at(i).velocity.y;
+        m_active_drops->at(i).curr_pos.y += m_active_drops->at(i).velocity.y +
+                (2.0 * urand() - 1.0) * Y_VARIATION ;
+        m_active_drops->at(i).curr_pos.y = min(m_active_drops->at(i).curr_pos.y, FTN_TOP);
         m_active_drops->at(i).velocity.y -= 0.0005;
     }
 

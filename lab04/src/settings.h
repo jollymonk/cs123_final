@@ -5,12 +5,13 @@
 
 #define NUM_EMITTERS 100
 #define DROP_SPEED 4
-#define FTN_WIDTH 4
-#define FTN_HEIGHT 10
+#define FTN_WIDTH 4.0
 #define FTN_TOP 1.5
-#define FTN_BOTTOM -1
-#define FTN_LEFT -2
-#define FRAMES_PER_SEC 30.0
+#define FTN_BOTTOM -1.5
+#define FTN_LEFT -2.0
+#define FRAMES_PER_SEC 45.0
+#define X_VARIATION .02
+#define Y_VARIATION .005
 
 // Enumeration values for the fill modes from which the user can choose in the GUI.
 enum FillMode
