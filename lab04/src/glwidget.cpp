@@ -37,7 +37,7 @@ GLWidget::GLWidget(QWidget *parent)
     m_img_scale = 0.0;
     m_curr_height = -1;
 
-    if (loadImage("/Users/mjunck/Dev/cs123/cs123_final/lab04/images/check.jpg"))
+    if (loadImage("/Users/mjunck/Dev/cs123/cs123_final/lab04/images/time.jpg"))
     {
         cout << "Successfully loaded image" << endl;
         assert(m_image);
@@ -47,7 +47,8 @@ GLWidget::GLWidget(QWidget *parent)
         assert(m_image->height() > 0);
         assert(m_image->width() > 0);
         m_img_scale = ((double) m_image->width() / (double) NUM_EMITTERS);
-        cout << "img width " << m_img_width << " ftn width " << NUM_EMITTERS << endl;
+        cout << "img width " << m_img_width << endl;
+        cout << "img height " << m_img_height << endl;
         cout << "image scale " << m_img_scale << endl;
         m_img_scaled_height = (int) m_img_scale * m_image->height();
         m_curr_height = m_img_height - 1;
@@ -145,17 +146,17 @@ void GLWidget::paintGL()
                     index = m_curr_height * m_img_width + col;
                     assert(col <= m_img_width);
                     assert(index <= m_img_height * m_img_width);
-                    int red = (int) pix[index].r;
-                    if (red < 100)
+                    int blue = (int) pix[index].b;
+                    if (blue < 50)
                     {
                         m_emitters[i]->addDrop();
                     }
-
                 }
-                m_curr_height--;
-                //m_curr_height = m_curr_height-- % (m_img_height - 1);
-
             }
+            // 0.4 is a random constant which I found worked well to make images scale nicely
+            m_curr_height -= (int) (DROP_SPEED * m_img_scale * (0.4));
+            if (m_curr_height < 0)
+                m_curr_height += m_img_height;
 
         }
         //make continuous flow, add drops to all emitters
