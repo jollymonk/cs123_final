@@ -2,9 +2,18 @@
 #define PARTICLEWIDGET_H
 
 #include "common.h"
+#include "CS123Common.h"
+#include "CS123Matrix.h"
+#include "Emitter.h"
 
 #include <QGLWidget>
 #include <QGLShader>
+#include <QList>
+#include <QtOpenGL>
+
+#define NUM_EMITTERS 10
+#define FTN_WIDTH 10
+#define FTN_HEIGHT 10
 
 class QFile;
 class ParticleEmitter;
@@ -17,7 +26,7 @@ public:
     ParticleWidget(QWidget *parent = 0);
     ~ParticleWidget();
 
-    ParticleEmitter *emitter() { return m_emitters[0]; }
+    ParticleEmitter *emitter() { return m_emitter; }
 
 protected:
     /**
@@ -54,11 +63,14 @@ protected:
     void resizeGL(int w, int h);
 
     /** The particle emitter containing the particles to draw */
-    ParticleEmitter **m_emitters;
+    ParticleEmitter *m_emitter;
     /** Controls when the scene is redrawn */
     QTimer *m_timer;
     /** Contains the camera's current position and orientation */
     Camera *m_camera;
+    Emitter** m_emitters;
+    GLUquadric *m_quadric;
+    float m_increment;
 
 protected slots:
     void mouseDragEvent(QMouseEvent *event){ Q_UNUSED(event); }

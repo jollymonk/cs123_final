@@ -1,6 +1,7 @@
 #include "particlewidget.h"
 #include "common.h"
 #include "particleemitter.h"
+#include "CS123Common.h"
 
 #ifdef __APPLE__
 #include <OpenGL/glu.h>
@@ -8,36 +9,52 @@
 #include <GL/glu.h>
 #endif
 
+#include "gl.h"
+#include "OpenGL.h"
 #include <QMouseEvent>
 #include <QTimer>
 #include <QGLShader>
 #include <QGLShaderProgram>
 #include <QFile>
-#include <iostream>
 
-using namespace std;
 
 ParticleWidget::ParticleWidget(QWidget *parent) : QGLWidget(QGLFormat(QGL::SampleBuffers | QGL::DoubleBuffer), parent)
 {
     m_camera = new Camera();
     m_camera->eye.x = 0.0f, m_camera->eye.y = 0.0f, m_camera->eye.z = 50.0f;
-    m_camera->center.x = 0.0f, m_camera->center.y = 0.0f, m_camera->center.z = -1.0f;
+    m_camera->center.x = 0.0f, m_camera->center.y = 0.0f, m_camera->center.z = 0.0f;
     m_camera->up.x = 0.0f, m_camera->up.y = 1.0f, m_camera->up.z = 0.0f;
     m_camera->angle = 45.0f, m_camera->near = .1f, m_camera->far = 1000.0f;
+
+    m_quadric = gluNewQuadric();
 
     //Do not change below here
     setAutoBufferSwap(false);
     setFocusPolicy(Qt::StrongFocus);
     m_timer = new QTimer(this);
+    m_increment = 0.0;
     connect(m_timer, SIGNAL(timeout()), this, SLOT(redraw()));
     m_timer->start(1000.0f / 20.0f);
+
+    m_emitters = new Emitter*[NUM_EMITTERS];
+    double width_inc = ((double) FTN_WIDTH) / ((double) NUM_EMITTERS);
+    double x_pos = 0.0;
+
+    for (int i = 0; i < NUM_EMITTERS; i++)
+    {
+        Emitter *e = new Emitter(x_pos, FTN_HEIGHT, m_quadric);
+        m_emitters[i] = e;
+        x_pos += width_inc;
+    }
 }
 
 ParticleWidget::~ParticleWidget()
 {
-    SAFE_DELETE(m_timer);
-    SAFE_DELETE(m_camera);
-    SAFE_DELETE(m_emitters);
+    safeDelete(m_timer);
+    safeDelete(m_camera);
+    //safeDelete(m_emitter);
+    safeDeleteArray(m_emitters);
+    gluDeleteQuadric(m_quadric);
     makeCurrent();
 }
 
@@ -79,39 +96,33 @@ GLuint ParticleWidget::loadTexture(const QString &path)
 void ParticleWidget::initializeGL()
 {
     glClearColor(0.0f,0.0f,0.0f,0.0f);
-    m_emitters = new ParticleEmitter *[5];
-
-    for (int i = 0; i < 5; i++)
-    {
-        ParticleEmitter *emitter = new ParticleEmitter(0,  //texture
-                                        float3(1.0f, 0.5f, 0.2f), //color
-                                        float3(0.0f, 0.0001f, 0.0f), //velocity
-                                        float3(0.0f, 0.0001f, 0.0f), //force
-                                        0.5, //scale
-                                        50.0, //fuzziness
-                                        50.0f / 10000.0f, //speed
-                                        100); //max particles
-        m_emitters[i] = emitter;
-    }
 
     //m_emitter = new ParticleEmitter(loadTexture("/Users/mjunck/Dev/cs123/cs123_final/lab06/textures"));
+    //glDisable(GL_DITHER);
+    //glDisable(GL_LIGHTING);
 
-    glDisable(GL_DITHER);
-    glDisable(GL_LIGHTING);
+    //glEnable(GL_TEXTURE_2D);
 
-    glEnable(GL_TEXTURE_2D);
+    // Enable depth testing, so that objects are occluded based on depth instead of drawing order
+    glEnable(GL_DEPTH_TEST);
 
+    // Enable back-face culling, meaning only the front side of every face is rendered
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
+
+    // Specify that the front face is represented by vertices in counterclockwise order (this is the default)
     glFrontFace(GL_CCW);
 
+    // Enable color materials with ambient and diffuse lighting terms
     glEnable(GL_COLOR_MATERIAL);
     glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
 
+    // Set up global (ambient) lighting
     GLfloat global_ambient[] = { 0.2f, 0.2f, 0.2f, 1.0f };
     glLightModelfv(GL_LIGHT_MODEL_AMBIENT, global_ambient);
     glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, 1);
 
+    // Set up GL_LIGHT0 with a position and lighting properties
     GLfloat ambientLight[] = {0.1f, 0.1f, 0.1f, 1.0f};
     GLfloat diffuseLight[] = { 1.0f, 1.0f, 1.0, 1.0f };
     GLfloat specularLight[] = { 0.5f, 0.5f, 0.5f, 1.0f };
@@ -127,12 +138,22 @@ void ParticleWidget::initializeGL()
     // Enable light 0
     glEnable(GL_LIGHT0);
 
+    // Load the initial settings
+    //updateSettings();
+
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    glEnable(GL_LIGHTING);
+    glShadeModel(GL_SMOOTH);
+
     updateCamera();
+    //emit _glInit(); //leave this
 
-    emit _glInit(); //leave this
+    glPushMatrix();
+    glTranslatef(0.0, 0.0, 0.0);
+    glColor3f(0.0, .75, .75);
+    gluSphere(m_quadric, 10.0, 20, 20);
 
-
-
+    glPopMatrix();
 }
 
 /**
@@ -143,17 +164,36 @@ void ParticleWidget::initializeGL()
   */
 void ParticleWidget::paintGL()
 {
+    float time = m_increment++ / 20.0;
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //clear the color & depth buffers
 
-    for (int i = 0; i < 5; i++)
-    {
-        m_emitters[i]->updateParticles();       //Move the particles
-        m_emitters[i]->drawParticles();         //Draw the particles
-    }
+    //m_emitter->updateParticles();       //Move the particles
+    //m_emitter->drawParticles();         //Draw the particles
 
+
+    //my stuff added in
+//    for (int i = 0; i < NUM_EMITTERS; i++) {
+
+//        Emitter *e = m_emitters[i];
+//        e->addDrop();
+//        e->updateDrops();
+//        e->drawDroplets();
+//    }
+
+//    glPushMatrix();
+//    glTranslatef(0.0, 0.0, 0.0);
+//    glColor3f(0.0, .75, .75);
+//    gluSphere(m_quadric, 10.0, 20, 20);
+
+//    glPopMatrix();
+
+    //end my stuff
 
     glFlush();
     swapBuffers();
+
+    cout << "painting inc " << m_increment << endl;
 }
 
 /**
@@ -187,4 +227,4 @@ void ParticleWidget::updateCamera()
               m_camera->up.x, m_camera->up.y, m_camera->up.z);
 }
 
-void ParticleWidget::redraw() { repaint(); }
+void ParticleWidget::redraw() { update(); }

@@ -1,10 +1,12 @@
 #include "glwidget.h"
 #include "settings.h"
+#include "math.h"
 
 GLWidget::GLWidget(QWidget *parent)
     : QGLWidget(parent), m_timer(this), m_fps(60.0f), m_increment(0)
 {
 
+    m_fps = FRAMES_PER_SEC;
     // Set up the camera
     m_camera.eye.x = 0.0f, m_camera.eye.y = 0.0f, m_camera.eye.z = 5.0f;
     m_camera.center.x = 0.0f, m_camera.center.y = 0.0f, m_camera.center.z = 0.0f;
@@ -16,6 +18,17 @@ GLWidget::GLWidget(QWidget *parent)
 
     // Start the timer for updating the screen
     m_timer.start(1000.0f / m_fps);
+
+    m_emitters = new Emitter*[NUM_EMITTERS];
+    double width_inc = ((double) FTN_WIDTH) / ((double) NUM_EMITTERS);
+    double x_pos = FTN_LEFT;
+
+    for (int i = 0; i < NUM_EMITTERS; i++)
+    {
+        Emitter *e = new Emitter(x_pos);
+        m_emitters[i] = e;
+        x_pos += width_inc;
+    }
 }
 
 GLWidget::~GLWidget()
@@ -80,23 +93,28 @@ void GLWidget::paintGL()
     // Get the time in seconds
     float time = m_increment++ / (float) m_fps;
 
-    float velocity = .1;
-
     // Clear the color and depth buffers to the current glClearColor
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // TODO: Put your drawing code here
 
-    for (int i = 0; i < 40; i++) {
-        glPushMatrix();
-        glTranslatef(.04 * i, -0.1 * time, 0.0);
-        glColor3f(0.0, .75, .75);
-        gluSphere(m_quadric, 0.01, 20, 20);
+    //add new drops
+    for (int i = 0; i < NUM_EMITTERS; i++) {
 
-        glPopMatrix();
+        Emitter *e = m_emitters[i];
+        int t = (int) m_increment % DROP_SPEED;
+        if (t == 0) {
+            e->addDrop();
+        }
     }
 
-
+    //update drops and draw
+    for (int i = 0; i < NUM_EMITTERS; i++)
+    {
+        Emitter *e = m_emitters[i];
+        e->updateDrops();
+        e->drawDroplets(m_quadric);
+    }
 
 }
 

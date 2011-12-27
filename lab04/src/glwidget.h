@@ -4,6 +4,7 @@
 #include <QGLWidget>
 #include <QTimer>
 #include "camera.h"
+#include "Emitter.h"
 
 class GLWidget : public QGLWidget
 {
@@ -30,6 +31,7 @@ private:
     QTimer m_timer;
     float m_fps;
     float m_increment;
+    Emitter** m_emitters;
 // Feel free to add your own member variables
 };
 

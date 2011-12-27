@@ -2,39 +2,10 @@
 #define PARTICLEEMITTER_H
 
 #include "common.h"
-#include "CS123Common.h"
-#include "CS123Matrix.h"
-#include "CS123Algebra.h"
 #include <QtOpenGL>
-#include <QGLWidget>
-#include <QList>
 
 class ParticleEmitter
 {
-
-    struct Droplet
-    {
-        Vector3 color;
-        /**
-          * The particle's current position in 3D space. Updated every step based on
-          * the particle's velocity.
-          */
-        Vector3 pos;
-
-        Vector3 init_pos;
-        /**
-          * The direction this particle is currently moving. The velocity of any particle
-          * in the system is: velocity = ParticleEmitter.m_speed * Particle.dir
-          */
-        Vector3 dir;
-        /**
-          * The force acting on this particle (e.g. from gravity). At each update step,
-          * Particle.dir += Particle.force.
-          */
-        Vector3 force;
-
-    };
-
     /**
       * Basic definition for a particle. You should not need to modify this.
       */
@@ -61,6 +32,8 @@ class ParticleEmitter
           * possible to have randomly generated colors or colors based on time. Used when
           * drawing the particle.
          */
+//        float3 init_pos;
+
         float3 color;
         /**
           * The particle's current position in 3D space. Updated every step based on
@@ -80,28 +53,15 @@ class ParticleEmitter
     };
 
 
-
-
 public:
-//    ParticleEmitter(GLuint textureId = 0,
-//                    float3 color = float3(1.0f, 0.5f, 0.2f),
-//                    float3 velocity = float3(0.0f, 0.0001f, 0.0f),
-//                    float3 force = float3(0.0f, 0.0001f, 0.0f),
-//                    float scale = .5f,
-//                    float fuzziness = 50.0f,
-//                    float speed = 50.0f / 10000.0f,
-//                    //unsigned maxParticles = 10000);
-//                    unsigned maxParticles = 100);
-
-    ParticleEmitter(GLuint textureId,
-                    float3 color,
-                    float3 velocity,
-                    float3 force,
-                    float scale,
-                    float fuzziness,
-                    float speed,
-                    //unsigned maxParticles = 10000);
-                    unsigned maxParticles = 100);
+    ParticleEmitter(GLuint textureId = 0,
+                    float3 color = float3(1.0f, 0.5f, 0.2f),
+                    float3 velocity = float3(0.0f, 0.0001f, 0.0f),
+                    float3 force = float3(0.0f, 0.0001f, 0.0f),
+                    float scale = .5f,
+                    float fuzziness = 50.0f,
+                    float speed = 50.0f / 10000.0f,
+                    unsigned maxParticles = 10000);
 
     ~ParticleEmitter();
 
@@ -131,8 +91,6 @@ public:
       */
     void updateParticles();
 
-    void emitDrop();
-
     // Do not modify the following functions (they are integrated with the UI)
     /**
       * Gets a mutable reference to the force being applied to all particles in the
@@ -161,9 +119,6 @@ public:
 protected:
     /** Contains all particles in the scene, active or inactive */
     Particle *m_particles;
-
-    QList<Droplet> *m_active_drops;
-
     /** The maximum number of particles in the scene (same as the size of the m_particles array) */
     unsigned m_maxParticles;
     /** The ID of the OpenGL texture that is used to draw particles */
