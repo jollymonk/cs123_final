@@ -60,3 +60,18 @@ void MainWindow::closeEvent(QCloseEvent *event)
 
     QMainWindow::closeEvent(event);
 }
+
+void MainWindow::fileOpen()
+{
+    QString file = QFileDialog::getOpenFileName(this, QString(), "/Users/mjunck/Dev/cs123/");
+    if (!file.isNull())
+    {
+
+        if (m_ui->centralWidget->loadImage(file))
+            QMessageBox::critical(this, "Error", "Could not load image \"" + file + "\"");
+        else
+        {
+            //image successfully loaded
+        }
+    }
+}

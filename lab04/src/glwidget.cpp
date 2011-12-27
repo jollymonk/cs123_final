@@ -31,12 +31,36 @@ GLWidget::GLWidget(QWidget *parent)
     }
 
     m_image = NULL;
+    m_img_height = 0;
+    m_img_width = 0;
+    m_img_scaled_height = 0;
+    m_img_scale = 0.0;
+    m_curr_height = -1;
+
+    if (loadImage("/Users/mjunck/Dev/cs123/cs123_final/lab04/images/check.jpg"))
+    {
+        cout << "Successfully loaded image" << endl;
+        assert(m_image);
+        settings.useImage = true;
+        m_img_height = m_image->height();
+        m_img_width = m_image->width();
+        assert(m_image->height() > 0);
+        assert(m_image->width() > 0);
+        m_img_scale = ((double) m_image->width() / (double) NUM_EMITTERS);
+        cout << "img width " << m_img_width << " ftn width " << NUM_EMITTERS << endl;
+        cout << "image scale " << m_img_scale << endl;
+        m_img_scaled_height = (int) m_img_scale * m_image->height();
+        m_curr_height = m_img_height - 1;
+    }
+    else
+        cout << "Could not load image, using full stream of drops " << endl;
+
 }
 
 GLWidget::~GLWidget()
 {
     gluDeleteQuadric(m_quadric);
-    safeDelete(m_image);
+    //safeDelete(m_image);
 }
 
 /**
@@ -99,17 +123,49 @@ void GLWidget::paintGL()
     // Clear the color and depth buffers to the current glClearColor
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    // TODO: Put your drawing code here
+    //time increment, determines whether droplet is added
+    int time_inc = (int) m_increment % DROP_SPEED;
 
-    //add new drops
-    for (int i = 0; i < NUM_EMITTERS; i++) {
+    //only add drops if time is current drop setting
+    if (time_inc == 0)
+    {
 
-        Emitter *e = m_emitters[i];
-        int t = (int) m_increment % DROP_SPEED;
-        if (t == 0) {
-            e->addDrop();
+        //add new drops from image sample
+        if (settings.useImage  && m_image)
+        {
+            int index;
+            int col;
+            const BGRA* pix = (BGRA*) m_image->constBits();
+            for (int i = 0; i < NUM_EMITTERS; i++)
+            {
+                Emitter *e = m_emitters[i];
+                if (m_curr_height > 0)
+                {
+                    col = (int) (i * m_img_scale);
+                    index = m_curr_height * m_img_width + col;
+                    assert(col <= m_img_width);
+                    assert(index <= m_img_height * m_img_width);
+                    int red = (int) pix[index].r;
+                    if (red < 100)
+                    {
+                        m_emitters[i]->addDrop();
+                    }
+
+                }
+                m_curr_height--;
+                //m_curr_height = m_curr_height-- % (m_img_height - 1);
+
+            }
+
+        }
+        //make continuous flow, add drops to all emitters
+        else
+        {
+            for (int i = 0; i < NUM_EMITTERS; i++)
+                m_emitters[i]->addDrop();
         }
     }
+
 
     //update drops and draw
     for (int i = 0; i < NUM_EMITTERS; i++)
@@ -219,10 +275,21 @@ bool GLWidget::loadImage(const QString &file)
         delete old;
     }
 
-    // show the new image
-    resize(temp->width(), temp->height());
-    //memcpy(data(), temp->bits(), temp->numBytes());
-    //update();
+    assert(temp->height() > 0);
+    assert(temp->width() > 0);
+
+    int t_height = temp->height();
+    int t_width = temp->width();
+
+    if (m_image)
+        delete m_image;
+    m_image = new QImage(temp->width(), temp->height(), QImage::Format_RGB32 /* this corresponds to the BGRA struct */);
+
+    // set the new image to black
+    memset(m_image->bits(), 0, t_width * t_height * sizeof(BGRA));
+    memcpy(m_image->bits(), temp->bits(), temp->numBytes());
+
+//    m_image = temp;
 
     // Remember the filename so we can revert to it
     m_lastfile = file;

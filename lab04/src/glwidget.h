@@ -36,6 +36,11 @@ private:
     float m_increment;
     Emitter** m_emitters;
     QImage *m_image;
+    int m_img_height;
+    int m_img_width;
+    int m_img_scaled_height;
+    double m_img_scale;
+    int m_curr_height;
     QString m_lastfile;
 // Feel free to add your own member variables
 };

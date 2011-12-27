@@ -31,7 +31,7 @@ void Emitter::drawDroplets(GLUquadric *quadric)
         Vector3 pos = m_active_drops->at(i).curr_pos;
         glPushMatrix();
         glTranslatef(pos.x, pos.y, pos.z);
-        glColor3f(0.75, .75, 0.0);
+        glColor3f(0.0, .75, 0.75);
         gluSphere(quadric, 0.008, 3, 3);
         glPopMatrix();
     }

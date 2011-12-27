@@ -17,6 +17,7 @@ void Settings::loadSettingsOrDefaults()
     fillMode = s.value("fillMode", FILL_POINTS).toInt();
     lightingEnabled = s.value("lightingEnabled", false).toBool();
     shadingMode = s.value("shadingMode", SHADING_FLAT).toInt();
+    useImage = s.value("useImage", false).toBool();
 }
 
 void Settings::saveSettings()
@@ -26,4 +27,5 @@ void Settings::saveSettings()
     s.setValue("fillMode", fillMode);
     s.setValue("lightingEnabled", lightingEnabled);
     s.setValue("shadingMode", shadingMode);
+    s.setValue("useImage", useImage);
 }

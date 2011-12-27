@@ -13,6 +13,9 @@
 #define X_VARIATION .02
 #define Y_VARIATION .005
 
+//total sum of BGR values to be considered black
+#define BLACK 45
+
 // Enumeration values for the fill modes from which the user can choose in the GUI.
 enum FillMode
 {
@@ -53,6 +56,7 @@ struct Settings
     int fillMode;      // The drawing mode used to draw primitives.
     bool lightingEnabled;      // Enable or disable lighting.
     int shadingMode;    // The shading mode to be used.
+    bool useImage;
 };
 
 // The global Settings object, will be initialized by MainWindow
