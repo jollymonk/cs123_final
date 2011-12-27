@@ -17,6 +17,9 @@ public:
     void updateSettings();
     void updateCamera();
 
+    bool loadImage(const QString &file);
+    bool saveImage(const QString &file);
+
 protected:
     void initializeGL();
     void paintGL();
@@ -32,6 +35,8 @@ private:
     float m_fps;
     float m_increment;
     Emitter** m_emitters;
+    QImage *m_image;
+    QString m_lastfile;
 // Feel free to add your own member variables
 };
 

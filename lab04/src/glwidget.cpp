@@ -29,11 +29,14 @@ GLWidget::GLWidget(QWidget *parent)
         m_emitters[i] = e;
         x_pos += width_inc;
     }
+
+    m_image = NULL;
 }
 
 GLWidget::~GLWidget()
 {
     gluDeleteQuadric(m_quadric);
+    safeDelete(m_image);
 }
 
 /**
@@ -91,7 +94,7 @@ void GLWidget::initializeGL()
 void GLWidget::paintGL()
 {
     // Get the time in seconds
-    float time = m_increment++ / (float) m_fps;
+    //float time = m_increment++ / (float) m_fps;
 
     // Clear the color and depth buffers to the current glClearColor
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -200,4 +203,30 @@ void GLWidget::updateSettings()
 void GLWidget::tick()
 {
     update();
+}
+
+bool GLWidget::loadImage(const QString &file)
+{
+    QImage *temp = new QImage();
+    if (!temp->load(file))
+        return false;
+
+    // make sure the image is RGB (not monochrome, for example)
+    if (temp->format() != QImage::Format_RGB32)
+    {
+        QImage *old = temp;
+        temp = new QImage(old->convertToFormat(QImage::Format_RGB32));
+        delete old;
+    }
+
+    // show the new image
+    resize(temp->width(), temp->height());
+    //memcpy(data(), temp->bits(), temp->numBytes());
+    //update();
+
+    // Remember the filename so we can revert to it
+    m_lastfile = file;
+
+    delete temp;
+    return true;
 }
