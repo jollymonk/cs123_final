@@ -34,7 +34,7 @@
   <widget class="QDockWidget" name="settingsDock">
    <property name="minimumSize">
     <size>
-     <width>140</width>
+     <width>148</width>
      <height>211</height>
     </size>
    </property>
@@ -175,9 +175,9 @@
      <item>
       <widget class="QGroupBox" name="fountainPattern">
        <property name="title">
-        <string>GroupBox</string>
+        <string>Fountain Pattern</string>
        </property>
-       <widget class="QRadioButton" name="continuous">
+       <widget class="QRadioButton" name="patternContinuous">
         <property name="geometry">
          <rect>
           <x>0</x>
@@ -190,20 +190,7 @@
          <string>Continuous</string>
         </property>
        </widget>
-       <widget class="QRadioButton" name="time">
-        <property name="geometry">
-         <rect>
-          <x>0</x>
-          <y>70</y>
-          <width>102</width>
-          <height>20</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>Time</string>
-        </property>
-       </widget>
-       <widget class="QRadioButton" name="zebra">
+       <widget class="QRadioButton" name="patternFan">
         <property name="geometry">
          <rect>
           <x>0</x>
@@ -213,10 +200,10 @@
          </rect>
         </property>
         <property name="text">
-         <string>Zebra</string>
+         <string>Fan</string>
         </property>
        </widget>
-       <widget class="QRadioButton" name="checkered">
+       <widget class="QRadioButton" name="patternZebra">
         <property name="geometry">
          <rect>
           <x>0</x>
@@ -226,10 +213,31 @@
          </rect>
         </property>
         <property name="text">
+         <string>Zebra</string>
+        </property>
+       </widget>
+       <widget class="QRadioButton" name="patternCheckered">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>70</y>
+          <width>102</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
          <string>Checkered</string>
         </property>
        </widget>
+       <zorder>patternContinuous</zorder>
+       <zorder>patternFan</zorder>
+       <zorder>patternZebra</zorder>
+       <zorder>patternCheckered</zorder>
+       <zorder>shadingGroupBox</zorder>
       </widget>
+     </item>
+     <item>
+      <widget class="QWidget" name="widget" native="true"/>
      </item>
     </layout>
    </widget>

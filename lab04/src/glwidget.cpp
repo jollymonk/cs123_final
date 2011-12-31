@@ -31,7 +31,7 @@ GLWidget::GLWidget(QWidget *parent)
     }
 
     //initialize images
-    m_image = new QImage();
+    m_image = NULL;
     m_img_zero = new QImage();
     m_img_one = new QImage();
     m_img_two = new QImage();
@@ -43,6 +43,9 @@ GLWidget::GLWidget(QWidget *parent)
     m_img_eight = new QImage();
     m_img_nine = new QImage();
     m_img_colon = new QImage();
+    m_zebra = new QImage();
+    m_checkered = new QImage();
+    m_fan = new QImage();
 
     m_img_height = 0;
     m_img_width = 0;
@@ -50,42 +53,13 @@ GLWidget::GLWidget(QWidget *parent)
     m_img_scale = 0.0;
     m_curr_height = -1;
 
-    settings.useTime = false;
-    settings.useImage = true;
+    //load all images
+    bool images_loaded = false;
+    loadImage(m_zebra, "/Users/mjunck/Dev/cs123/cs123_final/lab04/images/zebra.jpg");
+    loadImage(m_checkered, "/Users/mjunck/Dev/cs123/cs123_final/lab04/images/check.jpg");
+    loadImage(m_fan, "/Users/mjunck/Dev/cs123/cs123_final/lab04/images/birds.jpg");
 
-    if (!settings.useTime && loadImage("/Users/mjunck/Dev/cs123/cs123_final/lab04/images/zebra.jpg"))
-    {
-        cout << "Successfully loaded image" << endl;
-        assert(m_image);
-        settings.useImage = true;
-        m_img_height = m_image->height();
-        m_img_width = m_image->width();
-        assert(m_image->height() > 0);
-        assert(m_image->width() > 0);
-        m_img_scale = ((double) m_image->width() / (double) NUM_EMITTERS);
-        cout << "img width " << m_img_width << endl;
-        cout << "img height " << m_img_height << endl;
-        cout << "image scale " << m_img_scale << endl;
-        m_img_scaled_height = (int) m_img_scale * m_image->height();
-        m_curr_height = m_img_height - 1;
-    }
-    else if (settings.useTime)
-    {
-        if (loadImage(*(&m_img_zero), "/Users/mjunck/Dev/cs123/cs123_final/lab04/images/zebra.jpg"))
-        {
-            loadImage("/Users/mjunck/Dev/cs123/cs123_final/lab04/images/zero.jpg");
-            bool z_null = (m_img_zero == NULL);
-            cout << "Time Image Nullity is " << z_null << endl;
-            settings.useImage = true;
-            settings.useTime = false;
-        }
-
-    }
-    else if (!settings.useTime)
-        cout << "Could not load image, using full stream of drops " << endl;
-    else
-        cout << "Failed to load time chars" << endl;
-
+    setPattern();
 }
 
 GLWidget::~GLWidget()
@@ -151,16 +125,15 @@ void GLWidget::paintGL()
     // Clear the color and depth buffers to the current glClearColor
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    bool t = (m_image == NULL);
-    bool s = settings.useImage;
-    //cout << "null " << t << " s " << s << endl;
+    if (m_curr_pattern != settings.fountainPattern)
+        setPattern();
 
     //only add drops if time is current drop setting
     int time_inc = (int) m_increment % DROP_SPEED;
     if (time_inc == 0)
     {
         //add new drops from image sample
-        if (settings.useImage  && (m_image != NULL))
+        if ((settings.fountainPattern != PATTERN_CONTINUOUS) && (m_image != NULL))
         {
             int index;
             int col;
@@ -193,9 +166,7 @@ void GLWidget::paintGL()
             for (int i = 0; i < NUM_EMITTERS; i++)
                 m_emitters[i]->addDrop();
         }
-        //cout << "emitting " << m_increment << endl;
     }
-
 
     //update drops and draw
     for (int i = 0; i < NUM_EMITTERS; i++)
@@ -204,7 +175,50 @@ void GLWidget::paintGL()
         e->updateDrops();
         e->drawDroplets(m_quadric);
     }
+}
 
+void GLWidget::setPattern()
+{
+    m_curr_pattern = settings.fountainPattern;
+
+    if (settings.fountainPattern == PATTERN_ZEBRA && m_zebra)
+        m_image = m_zebra;
+    else if (settings.fountainPattern == PATTERN_CHECKERED && m_checkered)
+        m_image = m_checkered;
+    else if (settings.fountainPattern == PATTERN_FAN && m_fan)
+        m_image = m_fan;
+    // else m_image is null and pattern is continuous
+    else
+        m_image = NULL;
+
+    if (settings.fountainPattern == PATTERN_ZEBRA)
+        assert(m_image == m_zebra || m_image == NULL);
+    else if (settings.fountainPattern == PATTERN_CHECKERED)
+        assert(m_image == m_checkered || m_image == NULL);
+
+
+    if (m_image)
+    {
+        cout << "Setting pattern " << settings.fountainPattern << endl;
+        m_img_height = m_image->height();
+        m_img_width = m_image->width();
+        assert(m_image->height() > 0);
+        assert(m_image->width() > 0);
+        m_img_scale = ((double) m_image->width() / (double) NUM_EMITTERS);
+        cout << "img width " << m_img_width << endl;
+        cout << "img height " << m_img_height << endl;
+        cout << "image scale " << m_img_scale << endl;
+        m_img_scaled_height = (int) m_img_scale * m_image->height();
+        m_curr_height = m_img_height - 1;
+    }
+    else
+    {
+        m_img_height = 0;
+        m_img_width = 0;
+        m_img_scale = 0;
+        m_img_scaled_height = 0;
+        m_curr_height = 0;
+    }
 }
 
 /**
@@ -332,7 +346,10 @@ bool GLWidget::loadImage(QImage *image, const QString &file)
 {
     QImage *temp = new QImage();
     if (!temp->load(file))
+    {
+        cout << "Failed to load " << file.toStdString() << endl;
         return false;
+    }
 
     // make sure the image is RGB (not monochrome, for example)
     if (temp->format() != QImage::Format_RGB32)
@@ -348,15 +365,16 @@ bool GLWidget::loadImage(QImage *image, const QString &file)
     int t_height = temp->height();
     int t_width = temp->width();
 
-
+    if (image)
+        delete image;
     image = new QImage(temp->width(), temp->height(), QImage::Format_RGB32 /* this corresponds to the BGRA struct */);
 
-    // set the new image to black
     memset(image->bits(), 0, t_width * t_height * sizeof(BGRA));
     memcpy(image->bits(), temp->bits(), temp->numBytes());
 
     delete temp;
 
     assert(image);
+    cout << "Successfully loaded " << file.toStdString() << endl;
     return true;
 }

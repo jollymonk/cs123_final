@@ -25,6 +25,7 @@ protected:
     void initializeGL();
     void paintGL();
     void resizeGL(int width, int height);
+    void setPattern();
 
 protected slots:
     void tick();
@@ -49,11 +50,15 @@ private:
     QImage *m_img_eight;
     QImage *m_img_nine;
     QImage *m_img_colon;
+    QImage *m_checkered;
+    QImage *m_fan;
+    QImage *m_zebra;
     int m_img_height;
     int m_img_width;
     int m_img_scaled_height;
     double m_img_scale;
     int m_curr_height;
+    int m_curr_pattern;
     QString m_lastfile;
 // Feel free to add your own member variables
 };

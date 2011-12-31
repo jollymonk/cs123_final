@@ -33,6 +33,16 @@ enum ShadingMode
     NUM_SHADING_MODES
 };
 
+// The Pattern that the Fountain displays
+enum FountainPattern
+{
+    PATTERN_CONTINUOUS,
+    PATTERN_ZEBRA,
+    PATTERN_CHECKERED,
+    PATTERN_FAN,
+    NUM_PATTERNS
+};
+
 
 /**
 
@@ -56,6 +66,7 @@ struct Settings
     int fillMode;      // The drawing mode used to draw primitives.
     bool lightingEnabled;      // Enable or disable lighting.
     int shadingMode;    // The shading mode to be used.
+    int fountainPattern;
     bool useImage;
     bool useTime;
 };

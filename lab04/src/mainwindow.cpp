@@ -40,6 +40,11 @@ void MainWindow::dataBind()
     BIND(ChoiceBinding::bindRadioButtons(NUM_SHADING_MODES, settings.shadingMode,
                                     m_ui->shadingModeFlat,
                                     m_ui->shadingModeSmooth));
+    BIND(ChoiceBinding::bindRadioButtons(NUM_PATTERNS, settings.fountainPattern,
+                                    m_ui->patternContinuous,
+                                    m_ui->patternCheckered,
+                                    m_ui->patternFan,
+                                    m_ui->patternZebra));
     BIND(BoolBinding::bindCheckbox(m_ui->lightingEnabled, settings.lightingEnabled));
 
 #undef BIND
