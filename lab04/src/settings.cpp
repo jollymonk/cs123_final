@@ -18,6 +18,7 @@ void Settings::loadSettingsOrDefaults()
     lightingEnabled = s.value("lightingEnabled", false).toBool();
     shadingMode = s.value("shadingMode", SHADING_FLAT).toInt();
     useImage = s.value("useImage", false).toBool();
+    useTime = s.value("useTime", false).toBool();
 }
 
 void Settings::saveSettings()
@@ -28,4 +29,5 @@ void Settings::saveSettings()
     s.setValue("lightingEnabled", lightingEnabled);
     s.setValue("shadingMode", shadingMode);
     s.setValue("useImage", useImage);
+    s.setValue("useTime", useTime);
 }

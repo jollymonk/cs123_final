@@ -57,6 +57,7 @@ struct Settings
     bool lightingEnabled;      // Enable or disable lighting.
     int shadingMode;    // The shading mode to be used.
     bool useImage;
+    bool useTime;
 };
 
 // The global Settings object, will be initialized by MainWindow

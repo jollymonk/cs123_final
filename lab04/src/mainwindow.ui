@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>600</width>
-    <height>400</height>
+    <height>819</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,7 +20,7 @@
      <x>0</x>
      <y>0</y>
      <width>600</width>
-     <height>25</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -168,6 +168,65 @@
         </property>
         <property name="text">
          <string>Smooth</string>
+        </property>
+       </widget>
+      </widget>
+     </item>
+     <item>
+      <widget class="QGroupBox" name="fountainPattern">
+       <property name="title">
+        <string>GroupBox</string>
+       </property>
+       <widget class="QRadioButton" name="continuous">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>40</y>
+          <width>102</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Continuous</string>
+        </property>
+       </widget>
+       <widget class="QRadioButton" name="time">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>70</y>
+          <width>102</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Time</string>
+        </property>
+       </widget>
+       <widget class="QRadioButton" name="zebra">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>100</y>
+          <width>102</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Zebra</string>
+        </property>
+       </widget>
+       <widget class="QRadioButton" name="checkered">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>130</y>
+          <width>102</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Checkered</string>
         </property>
        </widget>
       </widget>

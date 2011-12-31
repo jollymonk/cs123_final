@@ -67,11 +67,11 @@ void MainWindow::fileOpen()
     if (!file.isNull())
     {
 
-        if (m_ui->centralWidget->loadImage(file))
-            QMessageBox::critical(this, "Error", "Could not load image \"" + file + "\"");
-        else
-        {
-            //image successfully loaded
-        }
+//        if (m_ui->centralWidget->loadImage(file))
+//            QMessageBox::critical(this, "Error", "Could not load image \"" + file + "\"");
+//        else
+//        {
+//            //image successfully loaded
+//        }
     }
 }

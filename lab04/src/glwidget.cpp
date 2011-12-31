@@ -30,14 +30,30 @@ GLWidget::GLWidget(QWidget *parent)
         x_pos += width_inc;
     }
 
-    m_image = NULL;
+    //initialize images
+    m_image = new QImage();
+    m_img_zero = new QImage();
+    m_img_one = new QImage();
+    m_img_two = new QImage();
+    m_img_three = new QImage();
+    m_img_four = new QImage();
+    m_img_five = new QImage();
+    m_img_six = new QImage();
+    m_img_seven = new QImage();
+    m_img_eight = new QImage();
+    m_img_nine = new QImage();
+    m_img_colon = new QImage();
+
     m_img_height = 0;
     m_img_width = 0;
     m_img_scaled_height = 0;
     m_img_scale = 0.0;
     m_curr_height = -1;
 
-    if (loadImage("/Users/mjunck/Dev/cs123/cs123_final/lab04/images/time.jpg"))
+    settings.useTime = false;
+    settings.useImage = true;
+
+    if (!settings.useTime && loadImage("/Users/mjunck/Dev/cs123/cs123_final/lab04/images/zebra.jpg"))
     {
         cout << "Successfully loaded image" << endl;
         assert(m_image);
@@ -53,8 +69,22 @@ GLWidget::GLWidget(QWidget *parent)
         m_img_scaled_height = (int) m_img_scale * m_image->height();
         m_curr_height = m_img_height - 1;
     }
-    else
+    else if (settings.useTime)
+    {
+        if (loadImage(*(&m_img_zero), "/Users/mjunck/Dev/cs123/cs123_final/lab04/images/zebra.jpg"))
+        {
+            loadImage("/Users/mjunck/Dev/cs123/cs123_final/lab04/images/zero.jpg");
+            bool z_null = (m_img_zero == NULL);
+            cout << "Time Image Nullity is " << z_null << endl;
+            settings.useImage = true;
+            settings.useTime = false;
+        }
+
+    }
+    else if (!settings.useTime)
         cout << "Could not load image, using full stream of drops " << endl;
+    else
+        cout << "Failed to load time chars" << endl;
 
 }
 
@@ -118,21 +148,19 @@ void GLWidget::initializeGL()
 **/
 void GLWidget::paintGL()
 {
-    // Get the time in seconds
-    //float time = m_increment++ / (float) m_fps;
-
     // Clear the color and depth buffers to the current glClearColor
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    //time increment, determines whether droplet is added
-    int time_inc = (int) m_increment % DROP_SPEED;
+    bool t = (m_image == NULL);
+    bool s = settings.useImage;
+    //cout << "null " << t << " s " << s << endl;
 
     //only add drops if time is current drop setting
+    int time_inc = (int) m_increment % DROP_SPEED;
     if (time_inc == 0)
     {
-
         //add new drops from image sample
-        if (settings.useImage  && m_image)
+        if (settings.useImage  && (m_image != NULL))
         {
             int index;
             int col;
@@ -165,6 +193,7 @@ void GLWidget::paintGL()
             for (int i = 0; i < NUM_EMITTERS; i++)
                 m_emitters[i]->addDrop();
         }
+        //cout << "emitting " << m_increment << endl;
     }
 
 
@@ -296,5 +325,38 @@ bool GLWidget::loadImage(const QString &file)
     m_lastfile = file;
 
     delete temp;
+    return true;
+}
+
+bool GLWidget::loadImage(QImage *image, const QString &file)
+{
+    QImage *temp = new QImage();
+    if (!temp->load(file))
+        return false;
+
+    // make sure the image is RGB (not monochrome, for example)
+    if (temp->format() != QImage::Format_RGB32)
+    {
+        QImage *old = temp;
+        temp = new QImage(old->convertToFormat(QImage::Format_RGB32));
+        delete old;
+    }
+
+    assert(temp->height() > 0);
+    assert(temp->width() > 0);
+
+    int t_height = temp->height();
+    int t_width = temp->width();
+
+
+    image = new QImage(temp->width(), temp->height(), QImage::Format_RGB32 /* this corresponds to the BGRA struct */);
+
+    // set the new image to black
+    memset(image->bits(), 0, t_width * t_height * sizeof(BGRA));
+    memcpy(image->bits(), temp->bits(), temp->numBytes());
+
+    delete temp;
+
+    assert(image);
     return true;
 }

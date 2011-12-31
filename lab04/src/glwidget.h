@@ -18,6 +18,7 @@ public:
     void updateCamera();
 
     bool loadImage(const QString &file);
+    bool loadImage(QImage *image, const QString &file);
     bool saveImage(const QString &file);
 
 protected:
@@ -36,6 +37,18 @@ private:
     float m_increment;
     Emitter** m_emitters;
     QImage *m_image;
+    //images of nums for displaying times
+    QImage *m_img_zero;
+    QImage *m_img_one;
+    QImage *m_img_two;
+    QImage *m_img_three;
+    QImage *m_img_four;
+    QImage *m_img_five;
+    QImage *m_img_six;
+    QImage *m_img_seven;
+    QImage *m_img_eight;
+    QImage *m_img_nine;
+    QImage *m_img_colon;
     int m_img_height;
     int m_img_width;
     int m_img_scaled_height;
