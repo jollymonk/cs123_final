@@ -7,7 +7,6 @@
 #define DROP_SPEED 4
 #define FTN_WIDTH 4.0
 #define FTN_TOP 1.5
-#define FTN_BOTTOM -1.5
 #define FTN_LEFT -2.0
 #define FRAMES_PER_SEC 45.0
 #define X_VARIATION .02

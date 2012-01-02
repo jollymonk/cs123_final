@@ -46,6 +46,7 @@ GLWidget::GLWidget(QWidget *parent)
     m_zebra = new QImage();
     m_checkered = new QImage();
     m_fan = new QImage();
+    m_concrete = new QImage();
 
     m_img_height = 0;
     m_img_width = 0;
@@ -54,10 +55,10 @@ GLWidget::GLWidget(QWidget *parent)
     m_curr_height = -1;
 
     //load all images
-    bool images_loaded = false;
     loadImage(m_zebra, "/Users/mjunck/Dev/cs123/cs123_final/lab04/images/zebra.jpg");
     loadImage(m_checkered, "/Users/mjunck/Dev/cs123/cs123_final/lab04/images/check.jpg");
-    loadImage(m_fan, "/Users/mjunck/Dev/cs123/cs123_final/lab04/images/birds.jpg");
+    loadImage(m_fan, "/Users/mjunck/Dev/cs123/cs123_final/lab04/images/fan.jpg");
+    loadImage(m_concrete, "/Users/mjunck/Dev/cs123/cs123_final/lab04/images/concrete.jpg");
 
     setPattern();
 }
@@ -105,6 +106,23 @@ void GLWidget::initializeGL()
     glLightfv(GL_LIGHT0, GL_SPECULAR, specularLight);
     glLightfv(GL_LIGHT0, GL_POSITION, position);
 
+    assert(m_concrete);
+    GLuint concrete_tex[1];
+    int concrete_height = m_concrete->height();
+    int concrete_width = m_concrete->width();
+
+    glGenTextures(1, concrete_tex);
+    glBindTexture(GL_TEXTURE_2D, concrete_tex[0]);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
+                    GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+                    GL_NEAREST);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, concrete_width,
+                 concrete_height, 0, GL_RGBA, GL_UNSIGNED_BYTE,
+                 m_concrete);
+
     // Set the screen color when the color buffer is cleared (in RGBA format)
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
@@ -114,6 +132,8 @@ void GLWidget::initializeGL()
     // Load the initial settings
     updateSettings();
     updateCamera();
+
+    cout << "Finished initialization " << endl;
 }
 
 /**
@@ -125,12 +145,15 @@ void GLWidget::paintGL()
     // Clear the color and depth buffers to the current glClearColor
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    paintScene();
+
     if (m_curr_pattern != settings.fountainPattern)
         setPattern();
 
     //only add drops if time is current drop setting
     int time_inc = (int) m_increment % DROP_SPEED;
     if (time_inc == 0)
+    //if (false)
     {
         //add new drops from image sample
         if ((settings.fountainPattern != PATTERN_CONTINUOUS) && (m_image != NULL))
@@ -205,11 +228,9 @@ void GLWidget::setPattern()
         assert(m_image->height() > 0);
         assert(m_image->width() > 0);
         m_img_scale = ((double) m_image->width() / (double) NUM_EMITTERS);
-        cout << "img width " << m_img_width << endl;
-        cout << "img height " << m_img_height << endl;
-        cout << "image scale " << m_img_scale << endl;
         m_img_scaled_height = (int) m_img_scale * m_image->height();
         m_curr_height = m_img_height - 1;
+        cout << "Finished setting pattern" << endl;
     }
     else
     {
@@ -377,4 +398,65 @@ bool GLWidget::loadImage(QImage *image, const QString &file)
     assert(image);
     cout << "Successfully loaded " << file.toStdString() << endl;
     return true;
+}
+
+void GLWidget::paintScene()
+{
+    //define scene
+    float x_start = -2.5;
+    float y_start = -1.5;
+    float z_start = 0.0;
+
+    float width = 5.0;
+    float height = 3.0;
+    float depth = 2.0;
+
+    float x_end = x_start + width;
+    float y_end = y_start + height;
+    float z_end = z_start + depth;
+
+    glBegin( GL_QUADS );
+    //define back wall
+    glColor3f(0.08, 0.1, 0.05);
+    glTexCoord3f(0.0, 0.0, 0.0); glVertex3f(x_start, y_start, z_start);
+    glTexCoord3f(1.0, 0.0, 0.0); glVertex3f(x_end, y_start, z_start);
+    glTexCoord3f(1.0, 1.0, 0.0); glVertex3f(x_end, y_end, z_start);
+    glTexCoord3f(0.0, 1.0, 0.0); glVertex3f(x_start, y_end, z_start);
+    glEnd();
+
+    glBegin( GL_QUADS );
+    //define top wall
+    glColor3f(0.75, 0.5, 0.0);
+    glTexCoord3f(0.0, 0.0, 0.0); glVertex3f(x_start, y_end, z_start);
+    glTexCoord3f(1.0, 0.0, 0.0); glVertex3f(x_end, y_end, z_start);
+    glTexCoord3f(1.0, 1.0, 0.0); glVertex3f(x_end, y_end, z_end);
+    glTexCoord3f(0.0, 1.0, 0.0); glVertex3f(x_start, y_end, z_end);
+    glEnd();
+
+    glBegin( GL_QUADS );
+    //define bottom wall
+    glColor3f(0.0, 0.5, 0.5);
+    glTexCoord3f(0.0, 0.0, 0.0); glVertex3f(x_end, y_start, z_start);
+    glTexCoord3f(1.0, 0.0, 0.0); glVertex3f(x_start, y_start, z_start);
+    glTexCoord3f(1.0, 1.0, 0.0); glVertex3f(x_start, y_start, z_end);
+    glTexCoord3f(0.0, 1.0, 0.0); glVertex3f(x_end, y_start, z_end);
+    glEnd();
+
+    glBegin( GL_QUADS );
+    //define right wall
+    glColor3f(0.0, 0.0, 0.75);
+    glTexCoord3f(0.0, 0.0, 0.0); glVertex3f(x_end, y_start, z_start);
+    glTexCoord3f(1.0, 0.0, 0.0); glVertex3f(x_end, y_start, z_end);
+    glTexCoord3f(1.0, 1.0, 0.0); glVertex3f(x_end, y_end, z_end);
+    glTexCoord3f(0.0, 1.0, 0.0); glVertex3f(x_end, y_end, z_start);
+    glEnd();
+
+    glBegin( GL_QUADS );
+    //define left wall
+    glColor3f(0.0, 0.75, 0.0);
+    glTexCoord3f(0.0, 0.0, 0.0); glVertex3f(x_start, y_start, z_end);
+    glTexCoord3f(1.0, 0.0, 0.0); glVertex3f(x_start, y_start, z_start);
+    glTexCoord3f(1.0, 1.0, 0.0); glVertex3f(x_start, y_end, z_start);
+    glTexCoord3f(0.0, 1.0, 0.0); glVertex3f(x_start, y_end, z_end);
+    glEnd();
 }

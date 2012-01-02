@@ -18,18 +18,12 @@ void Settings::loadSettingsOrDefaults()
     lightingEnabled = s.value("lightingEnabled", false).toBool();
     shadingMode = s.value("shadingMode", SHADING_FLAT).toInt();
     fountainPattern = s.value("fountainPattern", PATTERN_CONTINUOUS).toInt();
-    useImage = s.value("useImage", true).toBool();
-    useTime = s.value("useTime", false).toBool();
 }
 
 void Settings::saveSettings()
 {
-    QSettings s;
+    //QSettings s;
 
-    s.setValue("fillMode", fillMode);
-    s.setValue("lightingEnabled", lightingEnabled);
-    s.setValue("shadingMode", shadingMode);
-    s.setValue("fountainPattern", fountainPattern);
-    s.setValue("useImage", useImage);
-    s.setValue("useTime", useTime);
+    //don't save settings, just use defaults
+
 }

@@ -26,6 +26,7 @@ protected:
     void paintGL();
     void resizeGL(int width, int height);
     void setPattern();
+    void paintScene();
 
 protected slots:
     void tick();
@@ -38,6 +39,7 @@ private:
     float m_increment;
     Emitter** m_emitters;
     QImage *m_image;
+    QImage *m_concrete;
     //images of nums for displaying times
     QImage *m_img_zero;
     QImage *m_img_one;
