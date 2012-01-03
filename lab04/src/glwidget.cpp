@@ -59,14 +59,51 @@ GLWidget::GLWidget(QWidget *parent)
     loadImage(m_checkered, "/Users/mjunck/Dev/cs123/cs123_final/lab04/images/check.jpg");
     loadImage(m_fan, "/Users/mjunck/Dev/cs123/cs123_final/lab04/images/fan.jpg");
     loadImage(m_concrete, "/Users/mjunck/Dev/cs123/cs123_final/lab04/images/concrete.jpg");
+    loadImage(m_img_zero, "/Users/mjunck/Dev/cs123/cs123_final/lab04/images/zero.jpg");
+    loadImage(m_img_one, "/Users/mjunck/Dev/cs123/cs123_final/lab04/images/one.jpg");
+    loadImage(m_img_two, "/Users/mjunck/Dev/cs123/cs123_final/lab04/images/two.jpg");
+    loadImage(m_img_three, "/Users/mjunck/Dev/cs123/cs123_final/lab04/images/three.jpg");
+    loadImage(m_img_four, "/Users/mjunck/Dev/cs123/cs123_final/lab04/images/four.jpg");
+    loadImage(m_img_five, "/Users/mjunck/Dev/cs123/cs123_final/lab04/images/five.jpg");
+    loadImage(m_img_six, "/Users/mjunck/Dev/cs123/cs123_final/lab04/images/six.jpg");
+    loadImage(m_img_seven, "/Users/mjunck/Dev/cs123/cs123_final/lab04/images/seven.jpg");
+    loadImage(m_img_eight, "/Users/mjunck/Dev/cs123/cs123_final/lab04/images/eight.jpg");
+    loadImage(m_img_nine, "/Users/mjunck/Dev/cs123/cs123_final/lab04/images/nine.jpg");
 
-    setPattern();
+    m_num_width = m_img_zero->width();
+
+    cout << "Finished loading all images" << endl;
 }
 
 GLWidget::~GLWidget()
 {
     gluDeleteQuadric(m_quadric);
-    //safeDelete(m_image);
+    cout << "deleted quadric " << endl;
+    safeDelete(m_zebra);
+    cout << "deleted zebra" << endl;
+    safeDelete(m_img_zero);
+    safeDelete(m_img_one);
+    safeDelete(m_img_two);
+    safeDelete(m_img_three);
+    safeDelete(m_img_four);
+    safeDelete(m_img_five);
+    cout << "deleted five " << endl;
+    safeDelete(m_img_six);
+    safeDelete(m_img_seven);
+    safeDelete(m_img_eight);
+    safeDelete(m_img_nine);
+    //safeDelete(m_fan);
+    //safeDelete(m_concrete);
+//    if (m_zebra)
+//        delete m_zebra;
+//    if (m_fan)
+//        delete m_fan;
+//    if (m_concrete)
+//        delete m_concrete;
+//    if (m_checkered)
+//        delete m_checkered;
+//    if (m_image)
+//        delete m_image;
 }
 
 /**
@@ -74,6 +111,7 @@ GLWidget::~GLWidget()
 **/
 void GLWidget::initializeGL()
 {
+    cout << "Initializing GL" << endl;
     // Get a new quadrics obect
     m_quadric = gluNewQuadric();
 
@@ -106,22 +144,24 @@ void GLWidget::initializeGL()
     glLightfv(GL_LIGHT0, GL_SPECULAR, specularLight);
     glLightfv(GL_LIGHT0, GL_POSITION, position);
 
-    assert(m_concrete);
-    GLuint concrete_tex[1];
-    int concrete_height = m_concrete->height();
-    int concrete_width = m_concrete->width();
+    cout << "Finished setting up lighting" << endl;
 
-    glGenTextures(1, concrete_tex);
-    glBindTexture(GL_TEXTURE_2D, concrete_tex[0]);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
-                    GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
-                    GL_NEAREST);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, concrete_width,
-                 concrete_height, 0, GL_RGBA, GL_UNSIGNED_BYTE,
-                 m_concrete);
+//    assert(m_concrete);
+//    GLuint concrete_tex[1];
+//    int concrete_height = m_concrete->height();
+//    int concrete_width = m_concrete->width();
+
+//    glGenTextures(1, concrete_tex);
+//    glBindTexture(GL_TEXTURE_2D, concrete_tex[0]);
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
+//                    GL_NEAREST);
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+//                    GL_NEAREST);
+//    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, concrete_width,
+//                 concrete_height, 0, GL_RGBA, GL_UNSIGNED_BYTE,
+//                 m_concrete);
 
     // Set the screen color when the color buffer is cleared (in RGBA format)
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -132,6 +172,7 @@ void GLWidget::initializeGL()
     // Load the initial settings
     updateSettings();
     updateCamera();
+    setPattern();
 
     cout << "Finished initialization " << endl;
 }
@@ -149,6 +190,7 @@ void GLWidget::paintGL()
 
     if (m_curr_pattern != settings.fountainPattern)
         setPattern();
+    int index, col;
 
     //only add drops if time is current drop setting
     int time_inc = (int) m_increment % DROP_SPEED;
@@ -156,10 +198,8 @@ void GLWidget::paintGL()
     //if (false)
     {
         //add new drops from image sample
-        if ((settings.fountainPattern != PATTERN_CONTINUOUS) && (m_image != NULL))
+        if (((settings.fountainPattern != PATTERN_CONTINUOUS) || settings.fountainPattern != PATTERN_TIME) && (m_image != NULL))
         {
-            int index;
-            int col;
             const BGRA* pix = (BGRA*) m_image->constBits();
             for (int i = 0; i < NUM_EMITTERS; i++)
             {
@@ -183,6 +223,98 @@ void GLWidget::paintGL()
                 m_curr_height += m_img_height;
 
         }
+        else if (m_pattern == PATTERN_TIME)
+        {
+            if (m_curr_hour != m_hour)
+            {
+                m_hour = m_curr_hour;
+                int hour_ls = m_hour % 10;
+                int hour_ms = m_hour / 10;
+                getTimeDigit(m_hour_ls, hour_ls);
+                getTimeDigit(m_hour_ms, hour_ms);
+            }
+            if (m_curr_min != m_min)
+            {
+                m_min = m_curr_min;
+                int min_ls = m_min % 10;
+                int min_ms = m_min / 10;
+                getTimeDigit(m_min_ls, min_ls);
+                getTimeDigit(m_min_ms, min_ms);
+            }
+
+            const BGRA* hour_ms_pix = (BGRA*) m_hour_ms->constBits();
+            const BGRA* hour_ls_pix = (BGRA*) m_hour_ls->constBits();
+            const BGRA* min_ms_pix = (BGRA*) m_min_ms->constBits();
+            const BGRA* min_ls_pix = (BGRA*) m_min_ls->constBits();
+
+            int curr_num_width = m_num_width * m_img_scale;
+
+            //paint left hour digit
+            for (int i = 0; i < curr_num_width; i++)
+            {
+                if (m_curr_height > 0)
+                {
+                    col = (int) (i * m_img_scale);
+                    index = m_curr_height * m_num_width + col;
+                    assert(col <= m_img_width);
+                    assert(index <= m_img_height * m_img_width);
+                    int blue = (int) hour_ms_pix[index].b;
+                    if (blue < 50)
+                        m_emitters[i]->addDrop();
+                }
+            }
+
+            //paint right hour digit
+            for (int i = curr_num_width; i < 2 * curr_num_width; i++)
+            {
+                if (m_curr_height > 0)
+                {
+                    col = (int) (i * m_img_scale);
+                    index = m_curr_height * m_num_width + col;
+                    assert(col <= m_img_width);
+                    assert(index <= m_img_height * m_img_width);
+                    int blue = (int) hour_ls_pix[index].b;
+                    if (blue < 50)
+                        m_emitters[i]->addDrop();
+                }
+            }
+
+            //paint left min digit
+            for (int i = 2 * curr_num_width; i < 3 * curr_num_width; i++)
+            {
+                if (m_curr_height > 0)
+                {
+                    col = (int) (i * m_img_scale);
+                    index = m_curr_height * m_num_width + col;
+                    assert(col <= m_img_width);
+                    assert(index <= m_img_height * m_img_width);
+                    int blue = (int) min_ms_pix[index].b;
+                    if (blue < 50)
+                        m_emitters[i]->addDrop();
+                }
+            }
+
+            //paint right min digit
+            for (int i = 3 * curr_num_width; i < NUM_EMITTERS; i++)
+            {
+                if (m_curr_height > 0)
+                {
+                    col = (int) (i * m_img_scale);
+                    index = m_curr_height * m_num_width + col;
+                    assert(col <= m_img_width);
+                    assert(index <= m_img_height * m_img_width);
+                    int blue = (int) min_ls_pix[index].b;
+                    if (blue < 50)
+                        m_emitters[i]->addDrop();
+                }
+            }
+
+            // 0.4 is a random constant which I found worked well to make images scale nicely
+            m_curr_height -= (int) (DROP_SPEED * m_img_scale * (0.4));
+            if (m_curr_height < 0)
+                m_curr_height += m_img_height;
+        }
+
         //make continuous flow, add drops to all emitters
         else
         {
@@ -219,8 +351,31 @@ void GLWidget::setPattern()
     else if (settings.fountainPattern == PATTERN_CHECKERED)
         assert(m_image == m_checkered || m_image == NULL);
 
+    if (settings.fountainPattern == PATTERN_TIME)
+    {
+        m_img_width = 4.0 * m_num_width;
+        m_img_height = m_img_zero->height();
+        m_img_scale = ((double) m_img_width / (double) NUM_EMITTERS);
+        m_curr_height = m_img_height - 1;
+        m_hour = 10;
+        m_curr_hour = m_hour;
+        m_min = 23;
+        m_curr_min = m_min;
+        assert(m_hour > 0 && m_hour < 13);
+        assert (m_min >= 0 && m_min < 60);
+        int hour_ls = m_hour % 10 ;
+        int hour_ms = m_hour / 10;
+        int min_ls = m_min % 10;
+        int min_ms = m_min / 10;
 
-    if (m_image)
+        getTimeDigit(m_hour_ls, hour_ls);
+        getTimeDigit(m_hour_ms, hour_ms);
+        getTimeDigit(m_min_ls, min_ls);
+        getTimeDigit(m_min_ms, min_ms);
+
+        cout << "Finished setting time pattern " << endl;
+    }
+    else if (m_image)
     {
         cout << "Setting pattern " << settings.fountainPattern << endl;
         m_img_height = m_image->height();
@@ -396,6 +551,9 @@ bool GLWidget::loadImage(QImage *image, const QString &file)
     delete temp;
 
     assert(image);
+    assert(image->height() > 0);
+    assert(image->width() > 0);
+
     cout << "Successfully loaded " << file.toStdString() << endl;
     return true;
 }
@@ -459,4 +617,32 @@ void GLWidget::paintScene()
     glTexCoord3f(1.0, 1.0, 0.0); glVertex3f(x_start, y_end, z_start);
     glTexCoord3f(0.0, 1.0, 0.0); glVertex3f(x_start, y_end, z_end);
     glEnd();
+}
+
+void GLWidget::getTimeDigit(QImage *image, int digit)
+{
+    assert(digit >= 0);
+    assert(digit <= 9);
+    if (digit == 0)
+        image = m_img_zero;
+    else if (digit == 1)
+        image = m_img_one;
+    else if (digit  == 2)
+        image = m_img_two;
+    else if (digit == 3)
+        image = m_img_three;
+    else if (digit == 4)
+        image == m_img_four;
+    else if (digit == 5)
+        image = m_img_five;
+    else if (digit == 6)
+        image = m_img_six;
+    else if (digit == 7)
+        image = m_img_seven;
+    else if (digit == 8)
+        image = m_img_eight;
+    else if (digit == 9)
+        image = m_img_nine;
+    else
+        image = NULL;
 }

@@ -39,6 +39,7 @@ enum FountainPattern
     PATTERN_ZEBRA,
     PATTERN_CHECKERED,
     PATTERN_FAN,
+    //PATTERN_TIME,
     NUM_PATTERNS
 };
 
@@ -66,8 +67,6 @@ struct Settings
     bool lightingEnabled;      // Enable or disable lighting.
     int shadingMode;    // The shading mode to be used.
     int fountainPattern;
-    bool useImage;
-    bool useTime;
 };
 
 // The global Settings object, will be initialized by MainWindow
