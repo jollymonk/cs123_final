@@ -33,10 +33,10 @@ void MainWindow::dataBind()
 {
 #define BIND(b) { DataBinding *_b = (b); m_bindings.push_back(_b); assert(connect(_b, SIGNAL(dataChanged()), this, SLOT(settingsChanged()))); }
 
-    BIND(ChoiceBinding::bindRadioButtons(NUM_FILL_MODES, settings.fillMode,
-                                    m_ui->fillModePoints,
-                                    m_ui->fillModeWireframe,
-                                    m_ui->fillModeShaded));
+//    BIND(ChoiceBinding::bindRadioButtons(NUM_FILL_MODES, settings.fillMode,
+//                                    m_ui->fillModePoints,
+//                                    m_ui->fillModeWireframe,
+//                                    m_ui->fillModeShaded));
     BIND(ChoiceBinding::bindRadioButtons(NUM_SHADING_MODES, settings.shadingMode,
                                     m_ui->shadingModeFlat,
                                     m_ui->shadingModeSmooth));

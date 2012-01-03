@@ -19,7 +19,7 @@ void Settings::loadSettingsOrDefaults()
 //    shadingMode = s.value("shadingMode", SHADING_FLAT).toInt();
 //    fountainPattern = s.value("fountainPattern", PATTERN_CONTINUOUS).toInt();
 
-    fillMode = FILL_POINTS;
+//    fillMode = FILL_POINTS;
     lightingEnabled = false;
     shadingMode = SHADING_FLAT;
     fountainPattern = PATTERN_CONTINUOUS;

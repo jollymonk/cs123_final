@@ -57,228 +57,144 @@
     <layout class="QVBoxLayout" name="settingsLayout">
      <item>
       <widget class="QWidget" name="widget" native="true">
-       <widget class="QGroupBox" name="shadingGroupBox">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="geometry">
-         <rect>
-          <x>0</x>
-          <y>-90</y>
-          <width>124</width>
-          <height>234</height>
-         </rect>
-        </property>
-        <property name="title">
-         <string>Shading</string>
-        </property>
-        <widget class="QRadioButton" name="shadingModeFlat">
-         <property name="geometry">
-          <rect>
-           <x>0</x>
-           <y>30</y>
-           <width>140</width>
-           <height>22</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>Flat</string>
-         </property>
-         <property name="checked">
-          <bool>true</bool>
-         </property>
-        </widget>
-        <widget class="QRadioButton" name="shadingModeSmooth">
-         <property name="geometry">
-          <rect>
-           <x>0</x>
-           <y>60</y>
-           <width>140</width>
-           <height>22</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>Smooth</string>
-         </property>
-        </widget>
-        <widget class="QGroupBox" name="fountainPattern">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
-         <property name="geometry">
-          <rect>
-           <x>0</x>
-           <y>200</y>
-           <width>124</width>
-           <height>175</height>
-          </rect>
-         </property>
-         <property name="title">
-          <string>Fountain Pattern</string>
-         </property>
-         <widget class="QRadioButton" name="patternContinuous">
-          <property name="geometry">
-           <rect>
-            <x>0</x>
-            <y>40</y>
-            <width>102</width>
-            <height>20</height>
-           </rect>
-          </property>
-          <property name="text">
-           <string>Continuous</string>
-          </property>
-         </widget>
-         <widget class="QRadioButton" name="patternFan">
-          <property name="geometry">
-           <rect>
-            <x>0</x>
-            <y>100</y>
-            <width>102</width>
-            <height>20</height>
-           </rect>
-          </property>
-          <property name="text">
-           <string>Fan</string>
-          </property>
-         </widget>
-         <widget class="QRadioButton" name="patternZebra">
-          <property name="geometry">
-           <rect>
-            <x>0</x>
-            <y>130</y>
-            <width>102</width>
-            <height>20</height>
-           </rect>
-          </property>
-          <property name="text">
-           <string>Zebra</string>
-          </property>
-         </widget>
-         <widget class="QRadioButton" name="patternCheckered">
-          <property name="geometry">
-           <rect>
-            <x>0</x>
-            <y>70</y>
-            <width>102</width>
-            <height>20</height>
-           </rect>
-          </property>
-          <property name="text">
-           <string>Checkered</string>
-          </property>
-         </widget>
-         <zorder>patternContinuous</zorder>
-         <zorder>patternFan</zorder>
-         <zorder>patternZebra</zorder>
-         <zorder>patternCheckered</zorder>
-         <zorder>shadingGroupBox</zorder>
-         <zorder>widget</zorder>
-        </widget>
-        <widget class="QGroupBox" name="lightingGroupBox">
-         <property name="geometry">
-          <rect>
-           <x>0</x>
-           <y>120</y>
-           <width>124</width>
-           <height>60</height>
-          </rect>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>60</height>
-          </size>
-         </property>
-         <property name="title">
-          <string>Lighting</string>
-         </property>
-         <widget class="QCheckBox" name="lightingEnabled">
+       <layout class="QGridLayout" name="gridLayout">
+        <item row="0" column="0">
+         <widget class="QGroupBox" name="shadingGroupBox">
           <property name="enabled">
            <bool>false</bool>
           </property>
-          <property name="geometry">
-           <rect>
-            <x>0</x>
-            <y>30</y>
-            <width>140</width>
-            <height>22</height>
-           </rect>
+          <property name="title">
+           <string>Shading</string>
           </property>
-          <property name="text">
-           <string>Use Lighting</string>
-          </property>
+          <widget class="QRadioButton" name="shadingModeFlat">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>30</y>
+             <width>140</width>
+             <height>22</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Flat</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+          <widget class="QRadioButton" name="shadingModeSmooth">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>60</y>
+             <width>140</width>
+             <height>22</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Smooth</string>
+           </property>
+          </widget>
          </widget>
-        </widget>
-       </widget>
-       <zorder>shadingGroupBox</zorder>
-       <zorder>fillModeGroupBox</zorder>
+        </item>
+        <item row="1" column="0">
+         <widget class="QGroupBox" name="lightingGroupBox">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>60</height>
+           </size>
+          </property>
+          <property name="title">
+           <string>Lighting</string>
+          </property>
+          <widget class="QCheckBox" name="lightingEnabled">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>30</y>
+             <width>140</width>
+             <height>22</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Use Lighting</string>
+           </property>
+          </widget>
+         </widget>
+        </item>
+       </layout>
       </widget>
      </item>
      <item>
-      <widget class="QGroupBox" name="fillModeGroupBox">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-         <horstretch>124</horstretch>
-         <verstretch>150</verstretch>
-        </sizepolicy>
+      <widget class="QGroupBox" name="fountainPattern">
+       <property name="enabled">
+        <bool>true</bool>
        </property>
        <property name="title">
-        <string>Fill Mode</string>
+        <string>Fountain Pattern</string>
        </property>
-       <widget class="QRadioButton" name="fillModePoints">
+       <widget class="QRadioButton" name="patternContinuous">
         <property name="geometry">
          <rect>
           <x>0</x>
-          <y>30</y>
-          <width>140</width>
-          <height>22</height>
+          <y>40</y>
+          <width>102</width>
+          <height>20</height>
          </rect>
         </property>
         <property name="text">
-         <string>Points</string>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
+         <string>Continuous</string>
         </property>
        </widget>
-       <widget class="QRadioButton" name="fillModeShaded">
+       <widget class="QRadioButton" name="patternFan">
         <property name="geometry">
          <rect>
           <x>0</x>
-          <y>90</y>
-          <width>140</width>
-          <height>22</height>
+          <y>100</y>
+          <width>102</width>
+          <height>20</height>
          </rect>
         </property>
         <property name="text">
-         <string>Shaded</string>
+         <string>Fan</string>
         </property>
        </widget>
-       <widget class="QRadioButton" name="fillModeWireframe">
+       <widget class="QRadioButton" name="patternZebra">
         <property name="geometry">
          <rect>
           <x>0</x>
-          <y>60</y>
-          <width>140</width>
-          <height>22</height>
+          <y>130</y>
+          <width>102</width>
+          <height>20</height>
          </rect>
         </property>
         <property name="text">
-         <string>Wireframe</string>
+         <string>Zebra</string>
         </property>
        </widget>
-       <zorder>fillModePoints</zorder>
-       <zorder>fillModeShaded</zorder>
-       <zorder>fillModeWireframe</zorder>
-       <zorder>lightingGroupBox</zorder>
-       <zorder>fountainPattern</zorder>
+       <widget class="QRadioButton" name="patternCheckered">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>70</y>
+          <width>102</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Checkered</string>
+        </property>
+       </widget>
       </widget>
      </item>
     </layout>

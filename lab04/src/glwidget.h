@@ -27,7 +27,7 @@ protected:
     void resizeGL(int width, int height);
     void setPattern();
     void paintScene();
-    void getTimeDigit(QImage *image, int digit);
+    //void getTimeDigit(QImage *image, int digit);
 
 protected slots:
     void tick();
@@ -60,6 +60,7 @@ private:
     QImage *m_hour_ms; //most significant hour digit
     QImage *m_min_ls;
     QImage *m_min_ms;
+    int m_pattern;
     int m_img_height;
     int m_img_width;
     int m_img_scaled_height;

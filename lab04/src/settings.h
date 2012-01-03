@@ -7,6 +7,7 @@
 #define DROP_SPEED 4
 #define FTN_WIDTH 4.0
 #define FTN_TOP 1.5
+#define FTN_BOTTOM -1.5
 #define FTN_LEFT -2.0
 #define FRAMES_PER_SEC 45.0
 #define X_VARIATION .02
@@ -16,13 +17,13 @@
 #define BLACK 45
 
 // Enumeration values for the fill modes from which the user can choose in the GUI.
-enum FillMode
-{
-    FILL_POINTS,
-    FILL_WIREFRAME,
-    FILL_SHADED,
-    NUM_FILL_MODES
-};
+//enum FillMode
+//{
+//    FILL_POINTS,
+//    FILL_WIREFRAME,
+//    FILL_SHADED,
+//    NUM_FILL_MODES
+//};
 
 // Enumeration values for the Shapes that the user can select in the GUI.
 enum ShadingMode
